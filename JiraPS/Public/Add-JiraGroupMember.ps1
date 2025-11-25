@@ -31,7 +31,7 @@ function Add-JiraGroupMember {
 
         $server = Get-JiraConfigServer -ErrorAction Stop
 
-        $resourceURi = "$server/rest/api/2/group/user?groupname={0}"
+        $resourceURi = Get-JiraRestApiUri -Resource "group/user"
     }
 
     process {
@@ -59,10 +59,21 @@ function Add-JiraGroupMember {
                 if ($groupMembers -notcontains $user.Name) {
                     Write-DebugMessage "[$($MyInvocation.MyCommand.Name)] User [$($user.Name)] is not already in group [$_group]. Adding user."
 
+                    # Get the appropriate user identifier for the current API version
+                    $userIdentifier = Get-JiraUserIdentifier -User $user
+
+                    $requestBody = @{}
+                    if ((Get-JiraApiVersion) -eq "3") {
+                        $requestBody.accountId = $userIdentifier.Value
+                    }
+                    else {
+                        $requestBody.name = $userIdentifier.Value
+                    }
+
                     $parameter = @{
-                        URI        = $resourceURi -f $groupObj.Name
+                        URI        = "$resourceURi?groupname=$($groupObj.Name)"
                         Method     = "POST"
-                        Body       = ConvertTo-Json -InputObject @{ 'name' = $user.Name }
+                        Body       = ConvertTo-Json -InputObject $requestBody
                         Credential = $Credential
                     }
                     Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"

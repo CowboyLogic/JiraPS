@@ -33,6 +33,7 @@ Set-JiraUser [-User] <Object[]> [-Property] <Hashtable> [-Credential <PSCredenti
 
 This function modifies user properties in JIRA, allowing you to change a user's
 e-mail address, display name, and any other properties supported by JIRA's API.
+It supports both JIRA API v2 and v3 for user identification.
 
 ## EXAMPLES
 

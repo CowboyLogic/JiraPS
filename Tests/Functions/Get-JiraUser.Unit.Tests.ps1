@@ -50,6 +50,7 @@ Describe "Get-JiraUser" -Tag 'Unit' {
     {
         "self": "$jiraServer/rest/api/2/user?username=$testUsername",
         "key": "$testUsername",
+        "accountId": "1234567890abcdef12345678",
         "name": "$testUsername",
         "emailAddress": "$testEmail",
         "displayName": "Powershell Test User",
@@ -63,6 +64,7 @@ Describe "Get-JiraUser" -Tag 'Unit' {
 {
     "self": "$jiraServer/rest/api/2/user?username=$testUsername",
     "key": "$testUsername",
+    "accountId": "1234567890abcdef12345678",
     "name": "$testUsername",
     "emailAddress": "$testEmail",
     "displayName": "Powershell Test User",
@@ -114,8 +116,20 @@ Describe "Get-JiraUser" -Tag 'Unit' {
             ConvertFrom-Json -InputObject $restResult
         }
 
-        # Viewing a specific user. The main difference here is that this includes groups, and the first does not.
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'Get' -and $URI -like "$jiraServer/rest/api/*/user?username=$testUsername&expand=groups"} {
+        # Searching for a user by accountId.
+        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'Get' -and $URI -like "$jiraServer/rest/api/*/user/search?*accountId=1234567890abcdef12345678*"} {
+            ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
+            ConvertFrom-Json -InputObject $restResult
+        }
+
+        # Get exact user by accountId
+        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'Get' -and $URI -like "$jiraServer/rest/api/*/user?accountId=1234567890abcdef12345678"} {
+            ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
+            ConvertFrom-Json -InputObject $restResult
+        }
+
+        # Viewing a specific user by accountId. The main difference here is that this includes groups, and the first does not.
+        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'Get' -and $URI -like "$jiraServer/rest/api/*/user?accountId=1234567890abcdef12345678&expand=groups"} {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             ConvertFrom-Json -InputObject $restResult2
         }
@@ -204,11 +218,22 @@ Describe "Get-JiraUser" -Tag 'Unit' {
             }
         }
 
-        It "Provides information about the user's group membership in Jira" {
-            $getResult = Get-JiraUser -UserName $testUsername
+        It "Gets information about a provided Jira user by AccountId" {
+            $getResult = Get-JiraUser -AccountId "1234567890abcdef12345678"
 
-            $getResult.groups.size | Should Be 2
-            $getResult.groups.items[0].Name | Should Be $testGroup1
+            $getResult | Should Not BeNullOrEmpty
+
+            Assert-MockCalled -CommandName Invoke-JiraMethod -Exactly 1 -Scope It -ParameterFilter {$URI -like "$jiraServer/rest/api/*/user/search?*accountId=1234567890abcdef12345678*"}
+            Assert-MockCalled -CommandName Invoke-JiraMethod -Exactly 1 -Scope It -ParameterFilter {$URI -like "$jiraServer/rest/api/*/user?accountId=1234567890abcdef12345678&expand=groups"}
+        }
+
+        It "Gets information about a provided Jira exact user by AccountId" {
+            $getResult = Get-JiraUser -AccountId "1234567890abcdef12345678" -Exact
+
+            $getResult | Should Not BeNullOrEmpty
+
+            Assert-MockCalled -CommandName Invoke-JiraMethod -Exactly 1 -Scope It -ParameterFilter {$Method -eq 'Get' -and $URI -like "$jiraServer/rest/api/*/user?accountId=1234567890abcdef12345678"}
+            Assert-MockCalled -CommandName Invoke-JiraMethod -Exactly 1 -Scope It -ParameterFilter {$URI -like "$jiraServer/rest/api/*/user?accountId=1234567890abcdef12345678&expand=groups"}
         }
 
         Context "Output checking" {

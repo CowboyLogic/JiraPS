@@ -22,7 +22,7 @@ Add-JiraGroupMember [-Group] <Object[]> [-UserName] <Object[]> [[-Credential] <P
 
 ## DESCRIPTION
 
-This function adds a JIRA user to a JIRA group.
+This function adds a JIRA user to a JIRA group. It supports both JIRA API v2 and v3 for user identification.
 
 ## EXAMPLES
 

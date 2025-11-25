@@ -41,6 +41,28 @@ Set-JiraConfigServer 'https://YourCloud.atlassian.net'
 New-JiraSession -Credential $cred
 ```
 
+#### API Version Configuration
+
+JiraPS supports both JIRA REST API v2 and v3. By default, the module uses API v2 for backward compatibility.
+
+```powershell
+# Check current API version (defaults to v2)
+Get-JiraApiVersion
+
+# Switch to API v3 for GDPR compliance and future compatibility
+Set-JiraApiVersion -Version 3
+
+# Switch back to API v2 if needed
+Set-JiraApiVersion -Version 2
+```
+
+**API v3 Benefits:**
+- GDPR compliant (uses `accountId` instead of `username`)
+- Future-proof for Jira Cloud
+- Enhanced privacy controls
+
+**Migration Note:** API v3 uses `accountId` for user identification instead of `username`. All user-related functions automatically handle this conversion.
+
 You can find the full documentation on our [homepage](https://atlassianps.org/docs/JiraPS) and in the console.
 
 ```powershell

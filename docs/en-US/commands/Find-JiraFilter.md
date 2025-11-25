@@ -33,7 +33,7 @@ Find-JiraFilter [[-Name] <string[]>] [-Owner] <string> [[-GroupName] <string>] [
 
 ## DESCRIPTION
 
-Searches for filters. This operation is similar to Get filters except that the results can be refined to include filters that have specific attributes. For example, filters with a particular name. When multiple attributes are specified only filters matching all attributes are returned.
+Searches for filters. This operation is similar to Get filters except that the results can be refined to include filters that have specific attributes. For example, filters with a particular name. When multiple attributes are specified only filters matching all attributes are returned. It supports both JIRA API v2 and v3 for owner identification.
 
 Disclaimer
 

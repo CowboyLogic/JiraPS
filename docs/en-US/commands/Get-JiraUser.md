@@ -27,6 +27,12 @@ Get-JiraUser [-Credential <PSCredential>] [<CommonParameters>]
 Get-JiraUser [-UserName] <String[]> [-IncludeInactive] [[-MaxResults] <UInt32>] [[-Skip] <UInt64>] [-Credential <PSCredential>] [-Exact] [<CommonParameters>]
 ```
 
+### ByAccountId
+
+```powershell
+Get-JiraUser [-AccountId] <String[]> [-IncludeInactive] [[-MaxResults] <UInt32>] [[-Skip] <UInt64>] [-Credential <PSCredential>] [-Exact] [<CommonParameters>]
+```
+
 ### ByInputObject
 
 ```powershell
@@ -35,7 +41,7 @@ Get-JiraUser [-InputObject] <Object[]> [-IncludeInactive] [-Credential <PSCreden
 
 ## DESCRIPTION
 
-This function returns information regarding a specified user from Jira.
+This function returns information regarding a specified user from Jira. It supports both JIRA API v2 (using username) and v3 (using account ID) for user identification.
 
 ## EXAMPLES
 
@@ -79,6 +85,22 @@ Get-JiraUser -UserName ""
 
 Returns information about all users. The empty string "" matches all users.
 
+### EXAMPLE 6
+
+```powershell
+Get-JiraUser -AccountId "5b10ac8d82e05b22cc7d4ef5"
+```
+
+Returns information about the user with the specified account ID (JIRA API v3).
+
+### EXAMPLE 7
+
+```powershell
+Get-JiraUser -AccountId "5b10ac8d82e05b22cc7d4ef5" -Exact
+```
+
+Returns information about the user with the exact account ID match (JIRA API v3).
+
 ## PARAMETERS
 
 ### -UserName
@@ -89,6 +111,22 @@ Name of the user to search for.
 Type: String[]
 Parameter Sets: ByUserName
 Aliases: User, Name
+
+Required: True
+Position: 1
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -AccountId
+
+Account ID of the user to search for. This parameter is used with JIRA API v3.
+
+```yaml
+Type: String[]
+Parameter Sets: ByAccountId
+Aliases:
 
 Required: True
 Position: 1

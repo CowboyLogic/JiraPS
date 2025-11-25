@@ -142,13 +142,14 @@ Describe "Invoke-JiraIssueTransition" -Tag 'Unit' {
         It "Updates assignee name if provided to the -Assignee parameter" {
             Mock Get-JiraUser {
                 [PSCustomObject] @{
-                    'Name'    = 'powershell-user'
-                    'RestUrl' = "$jiraServer/rest/api/2/user?username=powershell-user"
+                    'Name'      = 'powershell-user'
+                    'AccountId' = '1234567890abcdef12345678'
+                    'RestUrl'   = "$jiraServer/rest/api/2/user?username=powershell-user"
                 }
             }
             { Invoke-JiraIssueTransition -Issue $issueKey -Transition 11 -Assignee 'powershell-user'} | Should Not Throw
 
-            Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Times 1 -Scope It -ParameterFilter { $Method -eq 'Post' -and $URI -like "*/rest/api/2/issue/$issueID/transitions" -and $Body -like '*name*powershell-user*' }
+            Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Times 1 -Scope It -ParameterFilter { $Method -eq 'Post' -and $URI -like "*/rest/api/2/issue/$issueID/transitions" -and ($Body -like '*name*powershell-user*' -or $Body -like '*accountId*1234567890abcdef12345678*') }
         }
 
         It "Unassigns an issue if 'Unassigned' is passed to the -Assignee parameter" {

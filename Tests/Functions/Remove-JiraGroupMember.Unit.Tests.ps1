@@ -63,12 +63,14 @@ BeforeAll {
                 $obj = [PSCustomObject]@{
                     PSTypeName = "JiraPS.User"
                     Name       = "$InputObject"
+                    AccountId  = '1234567890abcdef12345678'
                 }
             }
             else {
                 $obj = [PSCustomObject]@{
                     PSTypeName = "JiraPS.User"
                     Name       = "$UserName"
+                    AccountId  = '1234567890abcdef12345678'
                 }
             }
             $obj | Add-Member -MemberType ScriptMethod -Name "ToString" -Force -Value {
@@ -84,8 +86,14 @@ BeforeAll {
             }
         }
 
+        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'DELETE' -and ($URI -like "*username=$testUsername1*" -or $URI -like "*accountId=1234567890abcdef12345678*")} {
+            ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
+        }
+
+        # Generic catch-all. This will throw an exception if we forgot to mock something.
         Mock Invoke-JiraMethod -ModuleName JiraPS {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
+            throw "Unidentified call to Invoke-JiraMethod"
         }
         #endregion Mocks
 

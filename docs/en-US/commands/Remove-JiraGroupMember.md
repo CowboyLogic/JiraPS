@@ -22,7 +22,7 @@ Remove-JiraGroupMember [-Group] <Object[]> [-User] <Object[]> [[-Credential] <PS
 
 ## DESCRIPTION
 
-This function removes a JIRA user from a JIRA group.
+This function removes a JIRA user from a JIRA group. It supports both JIRA API v2 and v3 for user identification.
 
 ## EXAMPLES
 

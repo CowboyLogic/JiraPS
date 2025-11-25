@@ -49,6 +49,7 @@ Describe "Remove-JiraUser" -Tag 'Unit' {
     "self": "$jiraServer/rest/api/2/user?username=$testUsername",
     "key": "$testUsername",
     "name": "$testUsername",
+    "accountId": "1234567890abcdef12345678",
     "emailAddress": "$testEmail",
     "displayName": "$testDisplayName",
     "active": true
@@ -66,6 +67,11 @@ Describe "Remove-JiraUser" -Tag 'Unit' {
         }
 
         Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'DELETE' -and $URI -like "$jiraServer/rest/api/*/user?username=$testUsername"} {
+            ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
+            # This REST method should produce no output
+        }
+
+        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'DELETE' -and $URI -like "$jiraServer/rest/api/*/user?accountId=1234567890abcdef12345678"} {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             # This REST method should produce no output
         }

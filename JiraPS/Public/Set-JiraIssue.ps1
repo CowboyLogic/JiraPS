@@ -173,8 +173,16 @@ function Set-JiraIssue {
             }
 
             if ($validAssignee) {
-                $assigneeProps = @{
-                    'name' = $assigneeString
+                # Get the appropriate user identifier for the current API version
+                if ($assigneeString) {
+                    $assigneeUser = Resolve-JiraUser -InputObject $assigneeString -Exact -Credential $Credential
+                    $userIdentifier = Get-JiraUserIdentifier -User $assigneeUser
+                    $assigneeProps = @{}
+                    $assigneeProps[$userIdentifier.ParameterName] = $userIdentifier.Value
+                }
+                else {
+                    # For unassigned (-1) or null cases
+                    $assigneeProps = @{ 'name' = $assigneeString }
                 }
             }
 

@@ -77,7 +77,8 @@ function Set-JiraUser {
 
         $server = Get-JiraConfigServer -ErrorAction Stop
 
-        $resourceURi = "$server/rest/api/2/user?username={0}"
+        # Build base URI - query parameter will be added per user based on API version
+        $resourceURi = Get-JiraRestApiUri -Resource "user"
     }
 
     process {
@@ -89,6 +90,9 @@ function Set-JiraUser {
             Write-Debug "[$($MyInvocation.MyCommand.Name)] Processing `$_user [$_user]"
 
             $userObj = Resolve-JiraUser -InputObject $_user -Exact -Credential $Credential -ErrorAction Stop
+
+            # Get the appropriate user identifier for the current API version
+            $userIdentifier = Get-JiraUserIdentifier -User $userObj
 
             $requestBody = @{}
 
@@ -122,7 +126,7 @@ function Set-JiraUser {
             }
 
             $parameter = @{
-                URI        = $resourceURi -f $userObj.Name
+                URI        = "$resourceURi?{0}={1}" -f $userIdentifier.ParameterName, $userIdentifier.Value
                 Method     = "PUT"
                 Body       = ConvertTo-Json -InputObject $requestBody -Depth 4
                 Credential = $Credential

@@ -100,6 +100,38 @@ $headers = @{ Authorization = "Bearer $($personalAccessToken)" }
 New-JiraSession -Headers $headers
 ```
 
+## API Version Configuration
+
+JiraPS supports both JIRA REST API v2 and v3. By default, the module uses API v2 for backward compatibility.
+
+### Setting API Version
+
+```powershell
+# Check current API version (defaults to v2)
+Get-JiraApiVersion
+
+# Switch to API v3 for GDPR compliance and future compatibility
+Set-JiraApiVersion -Version 3
+
+# Switch back to API v2 if needed
+Set-JiraApiVersion -Version 2
+```
+
+### API Version Differences
+
+**API v2 (Default):**
+- Uses `username` for user identification
+- Compatible with all Jira Server and Data Center versions
+- Legacy authentication methods supported
+
+**API v3:**
+- Uses `accountId` for user identification (GDPR compliant)
+- Required for Jira Cloud with enhanced privacy controls
+- Some user fields may be null due to privacy settings
+- Recommended for new implementations
+
+> **Note:** The API version setting persists for the current PowerShell session. You may need to set it after importing the module or reloading your PowerShell session.
+
 ## What About OAuth
 
 Jira does support use of OAuth, but JiraPS does not - yet.

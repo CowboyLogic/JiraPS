@@ -64,9 +64,20 @@ Describe "Get-JiraGroupMember" -Tag 'Unit' {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             ConvertFrom-Json @'
 {
-"Name":  "testgroup",
-"RestUrl":  "https://jira.example.com/rest/api/2/group?groupname=testgroup",
-"Size":  2
+    "values": [
+        {
+            "name": "testuser1",
+            "accountId": "1234567890abcdef12345678",
+            "displayName": "Test User 1",
+            "active": true
+        },
+        {
+            "name": "testuser2",
+            "accountId": "87654321fedcba0987654321",
+            "displayName": "Test User 2",
+            "active": true
+        }
+    ]
 }
 '@
         }

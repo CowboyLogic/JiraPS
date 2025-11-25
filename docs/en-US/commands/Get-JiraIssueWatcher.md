@@ -21,7 +21,7 @@ Get-JiraIssueWatcher [-Issue] <Object> [[-Credential] <PSCredential>] [<CommonPa
 
 ## DESCRIPTION
 
-This function obtains watchers from existing issues in JIRA.
+This function obtains watchers from existing issues in JIRA. It supports both JIRA API v2 and v3 for user identification.
 
 ## EXAMPLES
 

@@ -23,7 +23,7 @@ Set-JiraIssue [-Issue] <Object[]> [[-Summary] <String>] [[-Description] <String>
 
 ## DESCRIPTION
 
-This function modifies an existing issue in JIRA.
+This function modifies an existing issue in JIRA. It supports both JIRA API v2 and v3 for assignee field identification.
 This can include changing the issue's summary or description, or assigning the issue.
 
 ## EXAMPLES

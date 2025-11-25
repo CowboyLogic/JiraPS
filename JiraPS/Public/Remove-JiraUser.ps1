@@ -42,7 +42,8 @@ function Remove-JiraUser {
 
         $server = Get-JiraConfigServer -ErrorAction Stop
 
-        $resourceURi = "$server/rest/api/2/user?username={0}"
+        # Build base URI - query parameter will be added per user based on API version
+        $resourceURi = Get-JiraRestApiUri -Resource "user"
 
         if ($Force) {
             Write-DebugMessage "[Remove-JiraGroup] -Force was passed. Backing up current ConfirmPreference [$ConfirmPreference] and setting to None"
@@ -61,8 +62,11 @@ function Remove-JiraUser {
 
             $userObj = Resolve-JiraUser -InputObject $_user -Credential $Credential -ErrorAction Stop
 
+            # Get the appropriate user identifier for the current API version
+            $userIdentifier = Get-JiraUserIdentifier -User $userObj
+
             $parameter = @{
-                URI        = $resourceURi -f $userObj.Name
+                URI        = "$resourceURi?{0}={1}" -f $userIdentifier.ParameterName, $userIdentifier.Value
                 Method     = "DELETE"
                 Credential = $Credential
             }

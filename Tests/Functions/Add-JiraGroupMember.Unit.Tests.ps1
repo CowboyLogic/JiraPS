@@ -61,6 +61,7 @@ Describe "Add-JiraGroupMember" -Tag 'Unit' {
             foreach ($user in $UserName) {
                 $object = [PSCustomObject] @{
                     'Name' = "$user"
+                    'AccountId' = '1234567890abcdef12345678'
                 }
                 $object.PSObject.TypeNames.Insert(0, 'JiraPS.User')
                 Write-Output $object
@@ -79,9 +80,15 @@ Describe "Add-JiraGroupMember" -Tag 'Unit' {
             $InputObject
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS {
+        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'POST' -and $URI -like "$jiraServer/rest/api/*/group/user?groupname=$testGroupName" -and ($Body -like "*$testUsername2*" -or $Body -like '*accountId*')} {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri', 'Body'
             return $true
+        }
+
+        # Generic catch-all. This will throw an exception if we forgot to mock something.
+        Mock Invoke-JiraMethod -ModuleName JiraPS {
+            ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri', 'Body'
+            throw "Unidentified call to Invoke-JiraMethod"
         }
 
         #############

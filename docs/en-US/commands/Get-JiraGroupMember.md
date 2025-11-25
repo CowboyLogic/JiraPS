@@ -22,7 +22,7 @@ Get-JiraGroupMember [-Group] <Object[]> [[-IncludeInactive] <Switch>] [[-StartIn
 
 ## DESCRIPTION
 
-This function returns members of a provided group in JIRA.
+This function returns members of a provided group in JIRA. It supports both JIRA API v2 and v3 for user identification.
 
 ## EXAMPLES
 

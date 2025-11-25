@@ -51,6 +51,7 @@ Describe "Set-JiraUser" -Tag 'Unit' {
     "self": "$jiraServer/rest/api/2/user?username=$testUsername",
     "key": "$testUsername",
     "name": "$testUsername",
+    "accountId": "1234567890abcdef12345678",
     "displayName": "$testDisplayName",
     "emailAddress": "$testEmail",
     "active": true
@@ -68,6 +69,11 @@ Describe "Set-JiraUser" -Tag 'Unit' {
         }
 
         Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'Put' -and $URI -eq "$jiraServer/rest/api/2/user?username=$testUsername"} {
+            ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
+            ConvertFrom-Json $restResultGet
+        }
+
+        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'Put' -and $URI -eq "$jiraServer/rest/api/3/user?accountId=1234567890abcdef12345678"} {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
             ConvertFrom-Json $restResultGet
         }

@@ -22,7 +22,7 @@ Invoke-JiraIssueTransition [-Issue] <Object> [-Transition] <Object> [[-Fields] <
 
 ## DESCRIPTION
 
-This function performs an issue transition on a JIRA issue.
+This function performs an issue transition on a JIRA issue. It supports both JIRA API v2 and v3 for assignee field identification.
 
 Transitions are defined in JIRA through workflows,
 and allow the issue to move from one status to the next.

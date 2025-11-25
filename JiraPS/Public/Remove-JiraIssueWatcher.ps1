@@ -53,8 +53,12 @@ function Remove-JiraIssueWatcher {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Processing [$username]"
             Write-Debug "[$($MyInvocation.MyCommand.Name)] Processing `$username [$username]"
 
+            # Resolve the watcher user and get the appropriate identifier for the current API version
+            $watcherUser = Resolve-JiraUser -InputObject $username -Exact -Credential $Credential -ErrorAction Stop
+            $userIdentifier = Get-JiraUserIdentifier -User $watcherUser
+
             $parameter = @{
-                URI        = "{0}/watchers?username={1}" -f $issueObj.RestURL, $username
+                URI        = "{0}/watchers?{1}={2}" -f $issueObj.RestURL, $userIdentifier.ParameterName, $userIdentifier.Value
                 Method     = "DELETE"
                 Credential = $Credential
             }

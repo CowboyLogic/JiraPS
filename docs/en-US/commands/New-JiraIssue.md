@@ -24,7 +24,7 @@ New-JiraIssue [-Project] <String> [-IssueType] <String> [-Summary] <String> [[-P
 
 ## DESCRIPTION
 
-This function creates a new issue in JIRA.
+This function creates a new issue in JIRA. It supports both JIRA API v2 and v3 for assignee and reporter field identification.
 
 Creating an issue requires a lot of data, and the exact data may be
 different from one instance of JIRA to the next.

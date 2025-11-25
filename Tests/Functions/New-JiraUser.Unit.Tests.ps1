@@ -49,6 +49,7 @@ Describe "New-JiraUser" -Tag 'Unit' {
     "self": "$jiraServer/rest/api/2/user?username=testUser",
     "key": "$testUsername",
     "name": "$testUsername",
+    "accountId": "1234567890abcdef12345678",
     "emailAddress": "$testEmail",
     "displayName": "$testDisplayName",
     "active": true

@@ -71,7 +71,7 @@ function Remove-JiraGroupMember {
 
         $server = Get-JiraConfigServer -ErrorAction Stop
 
-        $resourceURi = "$server/rest/api/2/group/user?groupname={0}&username={1}"
+        $resourceURi = Get-JiraRestApiUri -Resource "group/user"
 
         if ($Force) {
             Write-DebugMessage "[$($MyInvocation.MyCommand.Name)] -Force was passed. Backing up current ConfirmPreference [$ConfirmPreference] and setting to None"
@@ -97,10 +97,13 @@ function Remove-JiraGroupMember {
 
                 $userObj = Resolve-JiraUser -InputObject $_user -Exact -Credential $Credential -ErrorAction Stop
 
-                # if ($groupMembers -contains $userObj.Name) {
-                # TODO: test what jira says
+                # Get the appropriate user identifier for the current API version
+                $userIdentifier = Get-JiraUserIdentifier -User $userObj
+
+                # Build URI with appropriate query parameter
+                $queryParam = if ((Get-JiraApiVersion) -eq "3") { "accountId" } else { "username" }
                 $parameter = @{
-                    URI        = $resourceURi -f $groupObj.Name, $userObj.Name
+                    URI        = "$resourceURi?groupname=$($groupObj.Name)&$queryParam=$($userIdentifier.Value)"
                     Method     = "DELETE"
                     Credential = $Credential
                 }

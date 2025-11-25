@@ -22,7 +22,7 @@ New-JiraUser [-UserName] <String> [-EmailAddress] <String> [[-DisplayName] <Stri
 
 ## DESCRIPTION
 
-This function creates a new user in JIRA.
+This function creates a new user in JIRA. It supports both JIRA API v2 and v3.
 
 By default, the new user will be notified via e-mail.
 

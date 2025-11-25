@@ -59,10 +59,17 @@ function Add-JiraIssueWatcher {
             Write-Verbose "[$($MyInvocation.MyCommand.Name)] Processing [$_watcher]"
             Write-Debug "[$($MyInvocation.MyCommand.Name)] Processing `$_watcher [$_watcher]"
 
+            # Resolve the watcher user and get the appropriate identifier for the current API version
+            $watcherUser = Resolve-JiraUser -InputObject $_watcher -Exact -Credential $Credential -ErrorAction Stop
+            $userIdentifier = Get-JiraUserIdentifier -User $watcherUser
+
+            $requestBody = @{}
+            $requestBody[$userIdentifier.ParameterName] = $userIdentifier.Value
+
             $parameter = @{
                 URI        = $resourceURi -f $issueObj.RestURL
                 Method     = "POST"
-                Body       = '"{0}"' -f $_watcher
+                Body       = ConvertTo-Json -InputObject $requestBody
                 Credential = $Credential
             }
             Write-Debug "[$($MyInvocation.MyCommand.Name)] Invoking JiraMethod with `$parameter"

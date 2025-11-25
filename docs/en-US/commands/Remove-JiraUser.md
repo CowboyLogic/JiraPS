@@ -22,7 +22,7 @@ Remove-JiraUser [-User] <Object[]> [[-Credential] <PSCredential>] [-Force] [-Wha
 
 ## DESCRIPTION
 
-This function removes an existing user from JIRA.
+This function removes an existing user from JIRA. It supports both JIRA API v2 and v3 for user identification.
 
 WARNING: Deleting a JIRA user may cause database integrity problems.
 See this article for details:

@@ -43,9 +43,12 @@ Describe "Set-JiraIssue" -Tag 'Unit' {
             $jiraServer
         }
         Mock Get-JiraUser {
-            [PSCustomObject] @{
+            $object = [PSCustomObject] @{
                 'Name' = 'username'
+                'AccountId' = '1234567890abcdef12345678'
             }
+            $object.PSObject.TypeNames.Insert(0, 'JiraPS.User')
+            return $object
         }
 
         Mock Set-JiraIssueLabel {}
@@ -65,7 +68,7 @@ Describe "Set-JiraIssue" -Tag 'Unit' {
         Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq "Put" -and $Uri -like "$jiraServer/rest/api/*/issue/12345"} {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
         }
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq "Put" -and $Uri -like "$jiraServer/rest/api/*/issue/12345/assignee"} {
+        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq "Put" -and $Uri -like "$jiraServer/rest/api/*/issue/12345/assignee" -and ($Body -like '*name*username*' -or $Body -like '*accountId*1234567890abcdef12345678*')} {
             ShowMockInfo 'Invoke-JiraMethod' 'Method', 'Uri'
         }
 
@@ -116,7 +119,7 @@ Describe "Set-JiraIssue" -Tag 'Unit' {
 
             It "Modifies the assignee of an issue if -Assignee is passed" {
                 { Set-JiraIssue -Issue TEST-001 -Assignee username } | Should Not Throw
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Times 1 -Scope It -ParameterFilter { $Method -eq 'Put' -and $URI -like "$jiraServer/rest/api/2/issue/12345/assignee" -and $Body -like '*name*username*' }
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Times 1 -Scope It -ParameterFilter { $Method -eq 'Put' -and $URI -like "$jiraServer/rest/api/*/issue/12345/assignee" -and ($Body -like '*name*username*' -or $Body -like '*accountId*1234567890abcdef12345678*') }
             }
 
             It "Unassigns an issue if 'Unassigned' is passed to the -Assignee parameter" {
@@ -132,7 +135,7 @@ Describe "Set-JiraIssue" -Tag 'Unit' {
             It "Calls Invoke-JiraMethod twice if using Assignee and another field" {
                 { Set-JiraIssue -Issue TEST-001 -Summary 'New summary' -Assignee username } | Should Not Throw
                 Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Times 1 -Scope It -ParameterFilter { $Method -eq 'Put' -and $URI -like "$jiraServer/rest/api/2/issue/12345" -and $Body -like '*summary*set*New summary*' }
-                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Times 1 -Scope It -ParameterFilter { $Method -eq 'Put' -and $URI -like "$jiraServer/rest/api/2/issue/12345/assignee" -and $Body -like '*name*username*' }
+                Assert-MockCalled -CommandName Invoke-JiraMethod -ModuleName JiraPS -Times 1 -Scope It -ParameterFilter { $Method -eq 'Put' -and $URI -like "$jiraServer/rest/api/*/issue/12345/assignee" -and ($Body -like '*name*username*' -or $Body -like '*accountId*1234567890abcdef12345678*') }
             }
 
             It "Uses Set-JiraIssueLabel with the -Set parameter when the -Label parameter is used" {

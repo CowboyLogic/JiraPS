@@ -53,6 +53,7 @@ Describe "Get-JiraIssueWatcher" -Tag 'Unit' {
         {
             "self": "$jiraServer/jira/rest/api/2/user?username=fred",
             "name": "fred",
+            "accountId": "1234567890abcdef12345678",
             "displayName": "Fred F. User",
             "active": false
         }

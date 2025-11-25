@@ -60,7 +60,7 @@ function New-JiraIssue {
 
         $createmeta = Get-JiraIssueCreateMetadata -Project $Project -IssueType $IssueType -Credential $Credential -ErrorAction Stop -Debug:$false
 
-        $resourceURi = "$server/rest/api/2/issue"
+        $resourceURi = Get-JiraRestApiUri -Resource "issue"
 
         Write-DebugMessage "[$($MyInvocation.MyCommand.Name)] ParameterSetName: $($PsCmdlet.ParameterSetName)"
         Write-DebugMessage "[$($MyInvocation.MyCommand.Name)] PSBoundParameters: $($PSBoundParameters | Out-String)"
@@ -93,7 +93,13 @@ function New-JiraIssue {
         }
 
         if ($PSCmdlet.MyInvocation.BoundParameters.ContainsKey("Reporter")) {
-            $requestBody["reporter"] = @{"name" = "$Reporter"}
+            # Resolve the reporter user and get the appropriate identifier for the current API version
+            $reporterUser = Resolve-JiraUser -InputObject $Reporter -Exact -Credential $Credential -ErrorAction Stop
+            $userIdentifier = Get-JiraUserIdentifier -User $reporterUser
+
+            $reporterField = @{}
+            $reporterField[$userIdentifier.ParameterName] = $userIdentifier.Value
+            $requestBody["reporter"] = $reporterField
         }
 
         if ($Parent) {

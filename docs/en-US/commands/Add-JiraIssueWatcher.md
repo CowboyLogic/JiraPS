@@ -22,7 +22,7 @@ Add-JiraIssueWatcher [-Watcher] <String[]> [-Issue] <Object> [[-Credential] <PSC
 
 ## DESCRIPTION
 
-This function adds a watcher to an existing issue in JIRA.
+This function adds a watcher to an existing issue in JIRA. It supports both JIRA API v2 and v3 for user identification.
 
 ## EXAMPLES
 

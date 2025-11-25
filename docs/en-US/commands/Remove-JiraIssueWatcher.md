@@ -22,7 +22,7 @@ Remove-JiraIssueWatcher [-Watcher] <String[]> [-Issue] <Object> [[-Credential] <
 
 ## DESCRIPTION
 
-This function removes a watcher from an existing issue in JIRA.
+This function removes a watcher from an existing issue in JIRA. It supports both JIRA API v2 and v3 for user identification.
 
 ## EXAMPLES
 

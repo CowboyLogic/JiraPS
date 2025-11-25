@@ -78,7 +78,7 @@ function Find-JiraFilter {
 
         $server = Get-JiraConfigServer -ErrorAction Stop
 
-        $searchURi = "$server/rest/api/2/filter/search"
+        $searchURi = Get-JiraRestApiUri -Resource "filter/search"
 
         [String]$Fields = $Fields -join ','
     }

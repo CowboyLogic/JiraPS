@@ -59,7 +59,7 @@ Describe "Remove-JiraIssueWatcher" -Tag 'Unit' {
             Get-JiraIssue -Key $Issue
         }
 
-        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'DELETE' -and $URI -eq "$jiraServer/rest/api/2/issue/$issueID/watchers?username=fred"} {
+        Mock Invoke-JiraMethod -ModuleName JiraPS -ParameterFilter {$Method -eq 'DELETE' -and ($URI -eq "$jiraServer/rest/api/2/issue/$issueID/watchers?username=fred" -or $URI -eq "$jiraServer/rest/api/3/issue/$issueID/watchers?accountId=1234567890abcdef12345678")} {
             ShowMockInfo 'Invoke-JiraMethod' -Params 'Uri', 'Method'
         }
 

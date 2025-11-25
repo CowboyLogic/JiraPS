@@ -20,7 +20,7 @@ function ConvertTo-JiraComponent {
             }
 
             if ($i.lead) {
-                $props.Lead = $i.lead
+                $props.Lead = ConvertTo-JiraUser -InputObject $i.lead
                 $props.LeadDisplayName = $i.lead.displayName
             }
             else {

@@ -1,6 +1,37 @@
 # Change Log
 
-## [NEXT VERSION] - YYYY-MM-DD
+## [2.15] - 2025-11-24
+
+### Added
+
+- **API v3 Support**: Full support for Atlassian JIRA REST API v3 with backward compatibility (#XXX)
+- `Set-JiraApiVersion`: Configure API version (2 or 3) for the session
+- `Get-JiraApiVersion`: Get current API version configuration
+- `Get-JiraUser -AccountId`: Support for querying users by accountId in v3
+- Automatic user identifier resolution between username (v2) and accountId (v3)
+- Enhanced privacy field handling for GDPR compliance
+
+### Changed
+
+- All user-related functions now support both username and accountId parameters
+- Issue assignee/reporter fields automatically use appropriate identifiers based on API version
+- Improved error handling for privacy-restricted fields in v3
+- Updated all conversion functions to handle nullable privacy fields
+
+### Fixed
+
+- User identification issues when mixing v2/v3 environments
+- Privacy field access in Jira Cloud environments
+
+### Breaking Changes
+
+- **API v3 Migration**: When using API v3, user identification switches from `username` to `accountId`
+- **Privacy Fields**: Some user fields may be null due to privacy settings in Jira Cloud
+- **Backward Compatibility**: v2 remains default, but v3 is recommended for new implementations
+
+### Migration Guide
+
+For migration from v2 to v3, see [MIGRATION_V2_TO_V3.md](docs/MIGRATION_V2_TO_V3.md)
 
 ## [2.14] - 2020-03-28
 

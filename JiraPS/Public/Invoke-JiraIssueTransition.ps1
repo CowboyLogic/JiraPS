@@ -127,11 +127,21 @@ function Invoke-JiraIssueTransition {
 
         if ($validAssignee) {
             Write-DebugMessage "[$($MyInvocation.MyCommand.Name)] Updating Assignee"
+            # Get the appropriate user identifier for the current API version
+            if ($assigneeString) {
+                $assigneeUser = Resolve-JiraUser -InputObject $assigneeString -Exact -Credential $Credential
+                $userIdentifier = Get-JiraUserIdentifier -User $assigneeUser
+                $assigneeField = @{}
+                $assigneeField[$userIdentifier.ParameterName] = $userIdentifier.Value
+            }
+            else {
+                # For unassigned case
+                $assigneeField = $null
+            }
+
             $requestBody += @{
                 'fields' = @{
-                    'assignee' = @{
-                        'name' = $assigneeString
-                    }
+                    'assignee' = $assigneeField
                 }
             }
         }

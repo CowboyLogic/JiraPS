@@ -33,6 +33,8 @@ $script:JiraServerUrl = [Uri](Get-Content $script:serverConfig)
 $script:DefaultContentType = "application/json; charset=utf-8"
 $script:DefaultPageSize = 25
 $script:DefaultHeaders = @{ "Accept-Charset" = "utf-8" }
+# Initialize default API version (backward compatible)
+$script:JiraApiVersion = "2"
 # Bug in PSv3's .Net API
 if ($PSVersionTable.PSVersion.Major -gt 3) {
     $script:DefaultHeaders["Accept"] = "application/json"

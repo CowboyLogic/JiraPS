@@ -46,7 +46,14 @@ function Resolve-JiraUser {
         }
         else {
             Write-DebugMessage "[$($MyInvocation.MyCommand.Name)] Resolve User to object"
-            return (Get-JiraUser -UserName $InputObject -Exact:$Exact -Credential $Credential -ErrorAction Stop)
+            # Determine whether to use UserName or AccountId parameter based on API version
+            $apiVersion = Get-JiraApiVersion
+            if ($apiVersion -eq "3") {
+                return (Get-JiraUser -AccountId $InputObject -Exact:$Exact -Credential $Credential -ErrorAction Stop)
+            }
+            else {
+                return (Get-JiraUser -UserName $InputObject -Exact:$Exact -Credential $Credential -ErrorAction Stop)
+            }
         }
     }
 }
